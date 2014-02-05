@@ -59,5 +59,5 @@ handler do |job|
   today_blog.post
 end
 
-every(1.day, 'today_blog.job', :at => '17:05')
+every(1.day, 'today_blog.job', :at => '08:10')
 
