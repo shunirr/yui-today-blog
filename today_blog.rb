@@ -39,7 +39,7 @@ class TodayBlog
       doc = Nokogiri::HTML.parse(open(url).read)
       title = doc.xpath('//h1/a[@class="skinArticleTitle"]').first.text.gsub("\n", '')
       date = doc.xpath('//span[@class="articleTime"]').text
-      client.update("#{date}のゆいゆい日記です #{title} #{url} #小倉唯")
+      @client.update("#{date}のゆいゆい日記です #{title} #{url} #小倉唯")
       sleep 60
     end
   end
@@ -59,5 +59,5 @@ handler do |job|
   today_blog.post
 end
 
-every(1.day, 'today_blog.job', :at => '08:10')
+every(1.day, 'today_blog.job', :at => '08:15')
 
