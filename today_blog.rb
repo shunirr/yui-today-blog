@@ -34,16 +34,32 @@ class TodayBlog
     end
   end
 
+  def get_doc(url)
+    doc = nil
+    retry_count = 2
+    begin
+      doc = Nokogiri::HTML.parse(open(url).read)
+    rescue => e
+      retry_count -= 1
+      if retry_count > 0
+        sleep 10
+        retry
+      end
+    end
+    doc
+  end
+
   def post_today_blogs
     @entries.each do |url|
-      doc = Nokogiri::HTML.parse(open(url).read)
-      title = doc.xpath('//h1/a[@class="skinArticleTitle"]').first.text.gsub("\n", '')
-      date = doc.xpath('//span[@class="articleTime"]').text
-      @client.update("#{date}のゆいゆい日記です #{title} #{url} #小倉唯")
+      doc = get_doc url
+      if doc
+        title = doc.xpath('//h1/a[@class="skinArticleTitle"]').first.text.gsub("\n", '')
+        date = doc.xpath('//span[@class="articleTime"]').text
+        @client.update("#{date}のゆいゆい日記です #{title} #{url} #小倉唯")
+      end
       sleep 60
     end
   end
-
 end
 
 include Clockwork
