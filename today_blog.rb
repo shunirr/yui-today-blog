@@ -4,8 +4,6 @@
 require 'csv'
 require 'date'
 require 'twitter'
-require 'open-uri'
-require 'nokogiri'
 require 'clockwork'
 
 class TodayBlog 
@@ -28,36 +26,18 @@ class TodayBlog
     @entries = []
     today = Date.today
     CSV.foreach("entries.csv") do |row|
-      date_string, url = row
+      date_string, title, url = row
       year, month, day = date_string.split('-')
-      @entries << url if today.month == month.to_i and today.day == day.to_i
-    end
-  end
-
-  def get_doc(url)
-    doc = nil
-    retry_count = 2
-    begin
-      doc = Nokogiri::HTML.parse(open(url).read)
-    rescue => e
-      retry_count -= 1
-      if retry_count > 0
-        sleep 10
-        retry
+      if today.month == month.to_i and today.day == day.to_i
+        @entries << {:date => date_string, :url => url, :title => title}
       end
     end
-    doc
   end
 
   def post_today_blogs
-    @entries.each do |url|
-      doc = get_doc url
-      if doc
-        title = doc.xpath('//h1/a[@class="skinArticleTitle"]').first.text.gsub("\n", '')
-        date = doc.xpath('//span[@class="articleTime"]').text
-        @client.update("#{date}のゆいゆい日記です #{title} #{url} #小倉唯")
-      end
-      sleep 60
+    @entries.each do |entry|
+      @client.update("#{entry[:date]}のゆいゆい日記です #{entry[:title]} #{entry[:url]} #小倉唯")
+      sleep 10
     end
   end
 end
