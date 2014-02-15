@@ -1,1 +1,1 @@
-clock: bundle exec clockwork ./today_blog.rb
+clock: bundle exec clockwork ./app.rb
