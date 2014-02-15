@@ -1,0 +1,6 @@
+db/database.log
+db/sqlite.db
+vendor/bundle
+*.swp
+.DS_Store
+*.DS_Store
