@@ -33,9 +33,9 @@ def format_date(date)
   "#{date.year}年#{date.month}月#{date.day}日(#{WDAYS[date.wday]})"
 end
 
-def post_twitter(entry)
+def post_twitter(blog_title, entry)
   date = format_date entry[:date]
-  message = "#{date}のゆいゆい日記です / #{entry[:title]} #{entry[:url]} #小倉唯"
+  message = "#{date}の#{blog_title}です / #{entry[:title]} #{entry[:url]} #小倉唯"
   puts message
   $client.update message
 end
@@ -52,7 +52,7 @@ end
 every(1.day, 'same_day.job', :at => jst2utc(16)) do
   same = TodayBlog::SameDay.new Date.today
   same.entries.each do |entry|
-    post_twitter entry
+    post_twitter 'ゆいゆい日記', entry
     sleep 10
   end
 end
@@ -66,7 +66,7 @@ every(10.minutes, 'today.job') do
       duplicate.url = entry[:url]
       duplicate.save!
 
-      post_twitter entry
+      post_twitter 'ゆいゆいティータイム', entry
     end
   end
 end
