@@ -58,14 +58,15 @@ every(1.day, 'same_day.job', :at => jst2utc(16)) do
 end
 
 every(10.minutes, 'today.job') do
-today = TodayBlog::Today.new
-today.entries.each do |entry|
-  duplicate = TodayBlog::Model::Duplicate.find_by_url entry[:url]
-  unless duplicate
-    duplicate = TodayBlog::Model::Duplicate.new
-    duplicate.url = entry[:url]
-    duplicate.save!
+  today = TodayBlog::Today.new
+  today.entries.each do |entry|
+    duplicate = TodayBlog::Model::Duplicate.find_by_url entry[:url]
+    unless duplicate
+      duplicate = TodayBlog::Model::Duplicate.new
+      duplicate.url = entry[:url]
+      duplicate.save!
 
-    post_twitter entry
+      post_twitter entry
+    end
   end
 end
