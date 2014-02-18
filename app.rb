@@ -60,10 +60,10 @@ end
 every(10.minutes, 'today.job') do
   today = TodayBlog::Today.new
   today.entries.each do |entry|
-    duplicate = TodayBlog::Model::Duplicate.find_by_url entry[:url]
+    duplicate = TodayBlog::Model::Duplicate.find_by_identify entry[:url]
     unless duplicate
       duplicate = TodayBlog::Model::Duplicate.new
-      duplicate.url = entry[:url]
+      duplicate.identify = entry[:url]
       duplicate.save!
 
       post_twitter 'ゆいゆいティータイム', entry

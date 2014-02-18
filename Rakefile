@@ -5,7 +5,7 @@ task :default => :migrate
 namespace :db do
   desc 'Migrate database'
   task :migrate => :environment do
-    ActiveRecord::Migrator.migrate('db/migrate', ENV['VERSION'] ? ENV['VERSION'].to_i : nil)
+    ActiveRecord::Migrator.migrate('db/migrate')
   end
 
   task :environment do
