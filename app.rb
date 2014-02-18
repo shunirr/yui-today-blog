@@ -71,7 +71,7 @@ every(10.minutes, 'today.job') do
    end
 end
 
-every(1.minute, 'yuikaori_info.job') do
+every(1.hour, 'yuikaori_info.job') do
   info = TodayBlog::YuikaoriInfo.new
   info.entries.each do |entry|
     duplicate = TodayBlog::Model::Duplicate.find_by_identify entry[:identify]
