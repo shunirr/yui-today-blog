@@ -37,7 +37,7 @@ def post_twitter(blog_title, entry)
   date = format_date entry[:date]
   message = "#{date}の#{blog_title}です / #{entry[:title]} #{entry[:url]} #小倉唯"
   puts message
-  $client.update message
+  # $client.update message
 end
 
 init_db
@@ -58,15 +58,29 @@ every(1.day, 'same_day.job', :at => jst2utc(16)) do
 end
 
 every(10.minutes, 'today.job') do
-  today = TodayBlog::Today.new
-  today.entries.each do |entry|
-    duplicate = TodayBlog::Model::Duplicate.find_by_identify entry[:url]
+   today = TodayBlog::Today.new
+   today.entries.each do |entry|
+     duplicate = TodayBlog::Model::Duplicate.find_by_identify entry[:identify]
+     unless duplicate
+       duplicate = TodayBlog::Model::Duplicate.new
+       duplicate.identify = entry[:identify]
+       duplicate.save!
+ 
+       post_twitter 'ゆいゆいティータイム', entry
+     end
+   end
+end
+
+every(1.minute, 'yuikaori_info.job') do
+  info = TodayBlog::YuikaoriInfo.new
+  info.entries.each do |entry|
+    duplicate = TodayBlog::Model::Duplicate.find_by_identify entry[:identify]
     unless duplicate
       duplicate = TodayBlog::Model::Duplicate.new
-      duplicate.identify = entry[:url]
+      duplicate.identify = entry[:identify]
       duplicate.save!
 
-      post_twitter 'ゆいゆいティータイム', entry
+      post_twitter 'ゆいかおりINFORMATION', entry
     end
   end
 end

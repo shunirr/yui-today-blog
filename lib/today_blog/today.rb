@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 
 require 'rss'
 require 'date'
@@ -23,9 +24,10 @@ module TodayBlog
       @entries = []
       rss.map do |i|
         @entries << {
-          :title => i.title,
-          :url   => i.link,
-          :date  => i.date,
+          :title    => i.title,
+          :url      => i.link,
+          :identify => i.link,
+          :date     => i.date,
         }
       end
     end

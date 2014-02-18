@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 class CreateDuplicates < ActiveRecord::Migration
   def self.up
     create_table :duplicates do |t|

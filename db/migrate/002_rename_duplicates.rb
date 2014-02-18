@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 class RenameDuplicates < ActiveRecord::Migration
   def self.up
     rename_column :duplicates, :url, :identify
