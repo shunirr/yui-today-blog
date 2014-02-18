@@ -35,7 +35,7 @@ end
 
 def post_twitter(blog_title, entry)
   date = format_date entry[:date]
-  message = "#{date}の#{blog_title}です / #{entry[:title]} #{entry[:url]} #小倉唯"
+  message = "#{date}の#{blog_title}です / #{entry[:title]} #{entry[:url]} #小倉唯 #石原夏織 #ゆいかおり"
   puts message
   $client.update message
 end
@@ -50,25 +50,45 @@ $client = Twitter::REST::Client.new do |config|
 end
 
 every(1.day, 'same_day.job', :at => jst2utc(16)) do
-  same = TodayBlog::SameDay.new Date.today
+  same = TodayBlog::SameDay.new :csv => 'ogura-yui.csv'
   same.entries.each do |entry|
     post_twitter 'ゆいゆい日記', entry
     sleep 10
   end
 end
 
-every(10.minutes, 'today.job') do
-   today = TodayBlog::Today.new
-   today.entries.each do |entry|
-     duplicate = TodayBlog::Model::Duplicate.find_by_identify entry[:identify]
-     unless duplicate
-       duplicate = TodayBlog::Model::Duplicate.new
-       duplicate.identify = entry[:identify]
-       duplicate.save!
- 
-       post_twitter 'ゆいゆいティータイム', entry
-     end
-   end
+every(10.minutes, 'ogurayui-0815.job') do
+  today = TodayBlog::RSS.new(
+    :url => 'http://feedblog.ameba.jp/rss/ameblo/ogurayui-0815/rss20.xml',
+    :valid_url_prefix => 'http://ameblo.jp/ogurayui-0815',
+  )
+  today.entries.each do |entry|
+    duplicate = TodayBlog::Model::Duplicate.find_by_identify entry[:identify]
+    unless duplicate
+      duplicate = TodayBlog::Model::Duplicate.new
+      duplicate.identify = entry[:identify]
+      duplicate.save!
+
+      post_twitter 'ゆいゆいティータイム', entry
+    end
+  end
+end
+
+every(10.minutes, 'ishiharakaori-0806.job') do
+  today = TodayBlog::RSS.new(
+    :url => 'http://feedblog.ameba.jp/rss/ameblo/ishiharakaori-0806/rss20.xml',
+    :valid_url_prefix => 'http://ameblo.jp/ishiharakaori-0806',
+  )
+  today.entries.each do |entry|
+    duplicate = TodayBlog::Model::Duplicate.find_by_identify entry[:identify]
+    unless duplicate
+      duplicate = TodayBlog::Model::Duplicate.new
+      duplicate.identify = entry[:identify]
+      duplicate.save!
+
+      post_twitter 'Mahalo.', entry
+    end
+  end
 end
 
 every(1.hour, 'yuikaori_info.job') do

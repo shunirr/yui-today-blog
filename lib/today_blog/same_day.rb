@@ -5,8 +5,9 @@ require 'date'
 
 module TodayBlog
   class SameDay
-    def initialize(date)
-      @date = date
+    def initialize(args = {})
+      @date = args[:date] || Date.today
+      @csv  = args[:csv]
     end
 
     def entries
@@ -17,7 +18,7 @@ module TodayBlog
     private
     def load_today_blogs
       @entries = []
-      CSV.foreach("entries.csv") do |row|
+      CSV.foreach(@csv) do |row|
         date_string, title, url = row
         year, month, day = date_string.split('-')
         if @date.month == month.to_i and @date.day == day.to_i
