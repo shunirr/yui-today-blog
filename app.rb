@@ -35,7 +35,7 @@ end
 
 def post_twitter(blog_title, entry)
   date = format_date entry[:date]
-  message = "#{date}の#{blog_title}です / #{entry[:title]} #{entry[:url]} #小倉唯 #石原夏織 #ゆいかおり"
+  message = "#{date}の#{blog_title}です / #{entry[:title]} #{entry[:url]}"
   puts message
   $client.update message
 end
